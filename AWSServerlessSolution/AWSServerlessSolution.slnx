@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="AWSServerless1.Tests/AWSServerless1.Tests.csproj" />
+  <Project Path="AWSServerless1/AWSServerless1.csproj" />
+  <Project Path="AWSServerless7minapi/AWSServerless7minapi.csproj" />
+  <Project Path="AWSServerless9MinAPICalculator/AWSServerless9MinAPICalculator.csproj" />
+</Solution>

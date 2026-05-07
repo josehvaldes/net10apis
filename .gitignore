@@ -55,3 +55,7 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+HelloWorldApi/.vs/
+HelloWorldApi/HelloWorldApi/appsettings.Development.json
+AWSServerlessSolution/.vs/
+AWSServerlessSolution/AWSServerless9MinAPICalculator/appsettings.Development.json
