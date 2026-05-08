@@ -9,6 +9,9 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  AZURE_WEBAPP_NAME: helloworldaot
+  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,17 +26,20 @@ jobs:
         with:
           dotnet-version: '10.x'
 
+      - name: Restore
+        run: dotnet restore ./HelloWorldApi/HelloWorldApi/HelloWorldApi.csproj
+        
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build ./HelloWorldApi/HelloWorldApi/HelloWorldApi.csproj --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-
+        run: dotnet publish ./HelloWorldApi/HelloWorldApi/HelloWorldApi.csproj -c Release -o ./publish
+  
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ./publish
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,6 +53,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
+          path: ./publish
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -61,5 +68,5 @@ jobs:
         with:
           app-name: 'apps-helloworldaot-test-01'
           slot-name: 'Production'
-          package: .
+          package: ./publish
           
