@@ -1,0 +1,49 @@
+name: Deploy Serverless API
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'AWSServerlessSolution/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.x'
+          
+    - name: Setup AWS SAM
+      uses: aws-actions/setup-sam@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
+
+    - name: Build SAM application
+      working-directory: AWSServerlessSolution/AWSServerless9MinAPICalculator
+      run: sam build --template-file serverless.template
+
+    - name: Deploy SAM application
+      working-directory: AWSServerlessSolution/AWSServerless9MinAPICalculator
+      run: |
+        sam deploy \
+          --template-file serverless.template \
+          --no-confirm-changeset \
+          --no-fail-on-empty-changeset \
+          --stack-name stack-minapi-calculator \
+          --capabilities CAPABILITY_IAM
