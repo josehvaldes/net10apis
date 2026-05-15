@@ -47,3 +47,25 @@ jobs:
           --no-fail-on-empty-changeset \
           --stack-name stack-minapi-calculator \
           --capabilities CAPABILITY_IAM
+    
+    - name: Tag Lambda version with git SHA
+      run: |
+        # Resolve the actual Lambda function name from the CloudFormation stack
+        FUNCTION_NAME=$(aws cloudformation describe-stack-resource \
+          --stack-name stack-minapi-calculator \
+          --logical-resource-id AspNetCoreFunction \
+          --query 'StackResourceDetail.PhysicalResourceId' \
+          --output text)
+
+        VERSION=$(aws lambda get-alias \
+        --function-name "$FUNCTION_NAME" \
+        --name live \
+        --query 'FunctionVersion' \
+        --output text)
+
+        # Add a description linking version to commit
+        aws lambda update-alias \
+          --function-name "$FUNCTION_NAME" \
+          --name live \
+          --function-version "$VERSION" \
+          --description "git-sha:${{ github.sha }}"

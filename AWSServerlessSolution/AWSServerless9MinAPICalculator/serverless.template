@@ -10,7 +10,8 @@
         "CodeUri": "",
         "MemorySize": 512,
         "Timeout": 30,
-        "Policies": ["AWSLambda_FullAccess"]
+        "Policies": ["AWSLambda_FullAccess"],
+        "AutoPublishAlias": "live"
       }
     }
   }
